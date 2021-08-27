@@ -11,11 +11,14 @@ from aws_cdk import (
 # being updated to use `cdk`.  You may delete this import if you don't need it.
 from aws_cdk import core
 
-from my_first_cdk_project.my_first_cdk_project_stack import MyFirstCdkProjectStack
+from my_first_cdk_project.my_first_cdk_project_stack import MyArtifactBucketStack
 
 
 app = core.App()
-MyFirstCdkProjectStack(app, "MyFirstCdkProjectStack",
+env_US = core.Environment(region='us-east-1')
+env_EU = core.Environment(region='eu-east-1')
+
+MyArtifactBucketStack(app, "myDevStack", env=env_US
     # If you don't specify 'env', this stack will be environment-agnostic.
     # Account/Region-dependent features and context lookups will not work,
     # but a single synthesized template can be deployed anywhere.
@@ -32,5 +35,7 @@ MyFirstCdkProjectStack(app, "MyFirstCdkProjectStack",
 
     # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
     )
+
+MyArtifactBucketStack(app, "myProdStack", is_prod=True, env=env_US)
 
 app.synth()

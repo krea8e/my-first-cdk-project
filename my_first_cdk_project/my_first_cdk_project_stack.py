@@ -10,32 +10,22 @@ from aws_cdk import (
 from aws_cdk import core
 
 
-class MyFirstCdkProjectStack(cdk.Stack):
+class MyArtifactBucketStack(cdk.Stack):
 
-    def __init__(self, scope: cdk.Construct, construct_id: str, **kwargs) -> None:
+    def __init__(self, scope: cdk.Construct, construct_id: str, is_prod=False, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
         # The code that defines your stack goes here
-        _s3.Bucket(
-            self, 
-            "myBucketId",
-            bucket_name="myfirstcdkproject20210819",
-            versioned=False,
-            encryption=_s3.BucketEncryption.S3_MANAGED,
-            block_public_access=_s3.BlockPublicAccess.BLOCK_ALL
-        )
-
-        mybucket = _s3.Bucket(
-            self,
-            "myBucketId1"
-        )
-
-#Create an output and export so that other stacks can use them
-
-        output_1 = cdk.CfnOutput(
-            self,
-            "myBucketOutput1",                  #Output Key
-            value=mybucket.bucket_name,         #Output Value
-            description=f"My first CDK Bucket",
-            export_name="myBucketOutput1"       #Export name that is available in Export tab in CloudFormation
-        )
+        if is_prod:
+            artifactBucket = _s3.Bucket(
+                self, 
+                "myProdArtifactBucketId",
+                versioned=True,
+                encryption=_s3.BucketEncryption.S3_MANAGED,
+                removal_policy=core.RemovalPolicy.RETAIN
+            )
+        else:
+            artifactBucket = _s3.Bucket(
+                self, 
+                "myDevArtifactBucketId"
+            )
